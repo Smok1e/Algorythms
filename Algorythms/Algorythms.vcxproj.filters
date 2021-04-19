@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Sort">
+      <UniqueIdentifier>{b42933f0-6b1d-4872-9a6e-ad50e8f39d22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Sort\Algorythms">
+      <UniqueIdentifier>{14303c54-3a0e-431a-8bf6-2c3e21549027}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UserInterface">
+      <UniqueIdentifier>{9e4d706b-c1af-4672-8797-33fe11a02eb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Sort\Graph">
+      <UniqueIdentifier>{9acf88d2-3dde-43e4-a321-62a48335336a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Sort\Algorythms\Bubble.h">
+      <Filter>Header Files\Sort\Algorythms</Filter>
+    </ClInclude>
+    <ClInclude Include="Sort\Algorythms\Insertion.h">
+      <Filter>Header Files\Sort\Algorythms</Filter>
+    </ClInclude>
+    <ClInclude Include="Sort\Algorythms\Selection.h">
+      <Filter>Header Files\Sort\Algorythms</Filter>
+    </ClInclude>
+    <ClInclude Include="Sort\CheckSort.h">
+      <Filter>Header Files\Sort</Filter>
+    </ClInclude>
+    <ClInclude Include="Sort\Controllable.h">
+      <Filter>Header Files\Sort</Filter>
+    </ClInclude>
+    <ClInclude Include="Sort\FillRand.h">
+      <Filter>Header Files\Sort</Filter>
+    </ClInclude>
+    <ClInclude Include="Sort\ProtectedArray.h">
+      <Filter>Header Files\Sort</Filter>
+    </ClInclude>
+    <ClInclude Include="Sort\Algorythms\BinaryInsertion.h">
+      <Filter>Header Files\Sort\Algorythms</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\ButtonManager.h">
+      <Filter>Header Files\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Buttons.h">
+      <Filter>Header Files\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Interface.h">
+      <Filter>Header Files\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Mouse.h">
+      <Filter>Header Files\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Sort\Graph\SortTest.h">
+      <Filter>Header Files\Sort\Graph</Filter>
+    </ClInclude>
+    <ClInclude Include="Sort\Algorythms\QuickSort.h">
+      <Filter>Header Files\Sort\Algorythms</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
