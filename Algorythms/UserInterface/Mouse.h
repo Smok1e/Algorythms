@@ -75,7 +75,7 @@ Mouse::Mouse (Coord2D position_addition) :
 	position_      (txMousePos ()),
 	last_position_ (position_),
 
-	wheel_delta_      (txUtilsMouseWheel ()),
+	wheel_delta_      (GetMouseWheel ()),
 	last_wheel_delta_ (wheel_delta_)
 {}
 
@@ -91,9 +91,9 @@ void Mouse::update ()
 	last_position_    = position_;
 	last_wheel_delta_ = wheel_delta_;
 						
-	state_       = GetMouseState      ();
-	position_    = txMousePos         ();
-	wheel_delta_ = txUtilsMouseWheel  ();
+	state_       = GetMouseState ();
+	position_    = txMousePos    ();
+	wheel_delta_ = GetMouseWheel ();
 }
 
 //------------------------------

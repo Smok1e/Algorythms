@@ -7,11 +7,8 @@
 //-----------------------
 
 class AppManager
-
 {
-
 public:
-
 	Context       context;
 	Mouse         mouse;
 	ButtonManager buttons;
@@ -35,7 +32,6 @@ public:
 	bool closed ();
 
 private:
-
 	ButtonManager menu_buttons_;
 
 	const char * title_;
@@ -57,7 +53,6 @@ private:
 	bool closed_;
 
 	void onDrawTitle ();
-
 };
 
 //-----------------------
@@ -95,10 +90,9 @@ AppManager::AppManager (int size_x, int size_y, const char * title) :
 
 void AppManager::init ()
 {
-	menu_buttons_.addButton (new ExitButton (Coord2D (size_x_ - caption_height_,   0), Coord2D (caption_height_, caption_height_), &on_exit_, title_background_, Color::DarkPink));
-	menu_buttons_.addButton (new HideButton (Coord2D (size_x_ - caption_height_*2, 0), Coord2D (caption_height_, caption_height_), &on_hide_, title_background_, Color::DarkCyan));
+	menu_buttons_.addButton (new ExitButton (Coord2D (size_x_ - caption_height_  +1, 1), Coord2D (caption_height_-2, caption_height_-2), &on_exit_, Color (32, 32, 32), Color::DarkPink));
+	menu_buttons_.addButton (new HideButton (Coord2D (size_x_ - caption_height_*2+1, 1), Coord2D (caption_height_-2, caption_height_-2), &on_hide_, Color (32, 32, 32), Color::DarkCyan));
 
-	_txConsoleMode = SW_SHOW;
 	_txWindowStyle = WS_NOFRAME;
 	txDisableAutoPause ();
 	txCreateWindow (size_x_, size_y_ + caption_height_);
@@ -108,6 +102,8 @@ void AppManager::init ()
 	SendMessage (txWindow (), WM_SETICON, ICON_SMALL, (LPARAM) icon);
 	SendMessage (txWindow (), WM_SETICON, ICON_BIG,   (LPARAM) icon);
 	SetActiveWindow (txWindow ());
+
+	SetWindowTextA (txWindow (), title_);
 }
 
 //-----------------------
@@ -136,7 +132,7 @@ bool AppManager::update ()
 	res = res || buttons.processButtons (&mouse);
 	
 	OnWindowFloat (mouse.getPosition ().y < 0 && !res);
-	
+
 	menu_buttons_.onTimeTick ();
 	buttons.onTimeTick ();
 
@@ -146,7 +142,7 @@ bool AppManager::update ()
 	if (on_exit_)
 		closed_ = true;
 
-	closed_ = closed_ || _txWindowClosed;
+	closed_ = closed_ || WasExitButtonPressed () || GetAsyncKeyState (VK_ESCAPE) != 0;
 
 	return res;
 }
@@ -204,13 +200,13 @@ void AppManager::onDrawTitle ()
 	txRectangle (0, 0, size_x_, caption_height_, screen_);
 
 	double fontsize_y = caption_height_ - 2;
-	double fontsize_x = fontsize_y / 2;
+	double fontsize_x = fontsize_y / 2.1;
 
 	screen_.setColor     (foreground_);
 	screen_.setFillColor (foreground_);
-	screen_.setFont ("calibri", fontsize_y, fontsize_x);
+	screen_.setFont ("consolas", fontsize_y, fontsize_x, FW_BOLD);
 
-	txTextOut (5, caption_height_ / 2 - fontsize_y / 2, title_, screen_);
+	txTextOut (7, caption_height_ / 2 - fontsize_y / 2, title_, screen_);
 }
 
 //-----------------------

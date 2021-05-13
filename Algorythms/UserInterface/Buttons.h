@@ -114,8 +114,20 @@ class AnimatedTextButton : public AnimatedGradientButton
 
 public :
 
-	AnimatedTextButton (Coord2D position, Coord2D size, const char * text, int fontsize, Color background, Color hover, Color textcolor, Color hovertextcolor, bool * parameter);
+	enum class align
+	{
+		left,
+		center
+	};
+
+	AnimatedTextButton (Coord2D position, Coord2D size, const char * text, align text_align, int fontsize, Color background, Color hover, Color textcolor, Color hovertextcolor, bool * parameter);
 	AnimatedTextButton ();
+
+	virtual void        setText (const char* text);
+	virtual const char* getText ();
+
+	virtual void setFontsize (int fontsize);
+	virtual int  getFontsize ();
 
 	virtual void onDraw (Context * context);
 
@@ -125,6 +137,7 @@ protected :
 	Color hovertextcolor_;
 
 	const char * text_;
+	align text_align_;
 
 	int fontsize_;
 
@@ -137,7 +150,7 @@ class AnimatedCheckButton : public AnimatedTextButton
 
 public :
 
-	AnimatedCheckButton (Coord2D position, Coord2D size, const char * text, int fontsize, Color background, Color hover, Color textcolor, Color hovertextcolor, bool * parameter);
+	AnimatedCheckButton (Coord2D position, Coord2D size, const char * text, align text_align, int fontsize, Color background, Color hover, Color textcolor, Color hovertextcolor, bool * parameter);
 	AnimatedCheckButton ();
 
 	virtual void onTimeTick ();
@@ -209,6 +222,7 @@ bool AbstractButton::onMouseTest (Coord2D mouse)
 
 bool AbstractButton::onMouseClick ()
 {
+	if (!parameter_) return false;
 	*parameter_ = !*parameter_;
 	return true;
 }
@@ -222,7 +236,6 @@ void AbstractButton::onTimeTick ()
 
 void AbstractButton::onDraw (Context * context)
 {
-
 	context -> setColor     (Color::White, 1);
 	context -> setFillColor (Color::Red     );
 	txRectangle (txCoord (position_), txCoord (position_ + size_), *context);
@@ -240,7 +253,6 @@ void AbstractButton::onDraw (Context * context)
 	context -> setFillColor (Color::White);
 	context -> setFont ("consolas", fontsize_y, fontsize_x, FW_BOLD);
 	txTextOut (position_.x + size_.x / 2 - textsize_x / 2, position_.y + size_.y / 2 - textsize_y / 2, text, *context);
-
 }
 
 //------------------------------
@@ -301,18 +313,22 @@ bool AnimatedGradientButton::onMouseTest (Coord2D mouse)
 
 void AnimatedGradientButton::onTimeTick ()
 {
-	t_ = Clump (t_ + delta_t * 0.025 * ((mousehover_ == 1) - (mousehover_ == 0)), 0, 1);
+	t_ = Clamp (t_ + delta_t * 0.025 * ((mousehover_ == 1) - (mousehover_ == 0)), 0, 1);
 }
 
 //------------------------------
 
 void AnimatedGradientButton::onDraw (Context * context)
 {
-	Color color = InterpolateColor (color1_, color2_, sin (t_));
+	Color color = Color::Interpolate (color1_, color2_, t_);
 
 	context -> setColor     (color);
 	context -> setFillColor (color);
-	txRectangle (txCoord (position_), txCoord (position_ + size_), *context);
+
+	const double corner_radius = 5;
+	double radius = corner_radius * (1.0-t_);
+
+	RoundRect (*context, txCoord (position_), txCoord (position_ + size_), radius, radius);
 }
 
 //------------------------------
@@ -372,18 +388,18 @@ void HideButton::onDraw (Context * context)
 	context -> setFillColor (Color::White);
 
 	txRectangle (position_.x + indent, position_.y + size_.y / 2, position_.x + size_.x - indent, position_.y + size_.y / 2 + 1, *context);
-
 }
 
 //------------------------------
 
-AnimatedTextButton::AnimatedTextButton (Coord2D position, Coord2D size, const char * text, int fontsize, Color background, Color hover, Color textcolor, Color hovertextcolor, bool * parameter) :
+AnimatedTextButton::AnimatedTextButton (Coord2D position, Coord2D size, const char * text, align text_align, int fontsize, Color background, Color hover, Color textcolor, Color hovertextcolor, bool * parameter) :
 	AnimatedGradientButton (position, size, background, hover, parameter),
 	
 	textcolor_      (textcolor),
 	hovertextcolor_ (hovertextcolor),
 
-	text_ (text),
+	text_       (text),
+	text_align_ (text_align),
 
 	fontsize_ (fontsize)
 {}
@@ -391,8 +407,32 @@ AnimatedTextButton::AnimatedTextButton (Coord2D position, Coord2D size, const ch
 //------------------------------
 
 AnimatedTextButton::AnimatedTextButton () :
-	AnimatedTextButton (Coord2D (0, 0), Coord2D (0, 0), "", 0, 0x0, 0x0, 0x0, 0x0, nullptr)
+	AnimatedTextButton (Coord2D (0, 0), Coord2D (0, 0), "", align::left, 0, 0x0, 0x0, 0x0, 0x0, nullptr)
 {}
+
+//------------------------------
+
+void AnimatedTextButton::setText (const char* text)
+{
+	text_ = text;
+}
+
+const char* AnimatedTextButton::getText ()
+{
+	return text_;
+}
+
+//------------------------------
+
+void AnimatedTextButton::setFontsize (int fontsize)
+{
+	fontsize_ = fontsize;
+}
+
+int AnimatedTextButton::getFontsize ()
+{
+	return fontsize_;
+}
 
 //------------------------------
 
@@ -403,30 +443,46 @@ void AnimatedTextButton::onDraw (Context * context)
 	int len = strlen (text_);
 
 	double fontsize_x = fontsize_;
-	double fontsize_y = fontsize_x * 2.2;
+	double fontsize_y = fontsize_x * 2.1;
 	
 	double textsize_x = fontsize_x * len;
 	double textsize_y = fontsize_y;
 
-	Color color = InterpolateColor (textcolor_, hovertextcolor_, t_);
+	Color color = Color::Interpolate (textcolor_, hovertextcolor_, t_);
+
+	Coord2D textpos;
+	
+	switch (text_align_)
+	{
+		case align::left :
+			textpos = Coord2D (position_.x + 10, position_.y + size_.y / 2 - textsize_y / 2);
+			break;
+
+		case align::center :		
+			textpos = Coord2D (position_.x + size_.x / 2 - len * fontsize_x / 2, position_.y + size_.y / 2 - textsize_y / 2);
+			break;
+
+		default:
+			textpos = position_;
+	}
 
 	context -> setColor     (color);
 	context -> setFillColor (color);
 	context -> setFont ("consolas", fontsize_y, fontsize_x, FW_BOLD);
-	txTextOut (position_.x + 10, position_.y + size_.y / 2 - textsize_y / 2, text_, *context);
+	txTextOut (txCoord (textpos), text_, *context);
 }
 
 //------------------------------
 
-AnimatedCheckButton::AnimatedCheckButton (Coord2D position, Coord2D size, const char * text, int fontsize, Color background, Color hover, Color textcolor, Color hovertextcolor, bool * parameter) :
-	AnimatedTextButton (position, size, text, fontsize, background, hover, textcolor, hovertextcolor, parameter),
-	t1_ (*parameter)
+AnimatedCheckButton::AnimatedCheckButton (Coord2D position, Coord2D size, const char * text, align text_align, int fontsize, Color background, Color hover, Color textcolor, Color hovertextcolor, bool * parameter) :
+	AnimatedTextButton (position, size, text, text_align, fontsize, background, hover, textcolor, hovertextcolor, parameter),
+	t1_ (parameter ? *parameter : 0)
 {}
 
 //------------------------------
 
 AnimatedCheckButton::AnimatedCheckButton () :
-	AnimatedCheckButton (Coord2D (0, 0), Coord2D (0, 0), "", 0, 0x0, 0x0, 0x0, 0x0, nullptr)
+	AnimatedCheckButton (Coord2D (0, 0), Coord2D (0, 0), "", align::left, 0, 0x0, 0x0, 0x0, 0x0, nullptr)
 {}
 
 //------------------------------
@@ -434,7 +490,9 @@ AnimatedCheckButton::AnimatedCheckButton () :
 void AnimatedCheckButton::onTimeTick ()
 {
 	AnimatedGradientButton::onTimeTick ();
-	t1_ = Clump (t1_ + AnimatedGradientButton::delta_t * 0.03 * ((*parameter_ == 1) - (*parameter_ == 0)), 0, 1);
+
+	if (!parameter_) return;
+	t1_ = Clamp (t1_ + AnimatedGradientButton::delta_t * 0.02 * ((*parameter_ == 1) - (*parameter_ == 0)), 0, 1);
 }
 
 //------------------------------
@@ -449,10 +507,6 @@ double AnimatedCheckButton::getT ()
 void AnimatedCheckButton::onDraw (Context * context)
 {
 	AnimatedTextButton::onDraw (context);
-
-	//Color color = InterpolateColor (Color::DarkPink, Color::DarkCyan, t1_);
-	//context -> setColor     (color);
-	//context -> setFillColor (color);
 
 	const int r = 3;
 	Coord2D pos = position_ + Coord2D (size_.x - r*4, size_.y/2);

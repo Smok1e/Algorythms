@@ -6,47 +6,55 @@ template <size_t Size>
 void QuickSort (protected_array <Size>& arr, size_t nMaxCount = Size);
 
 template <size_t Size>
-void ReplaceWrongElements (protected_array <Size>& arr, int left, int right);
+void AntiQuickSort (protected_array <Size> & arr, size_t nMaxCount = Size);
+
+template <size_t Size>
+void _QuickSort (protected_array <Size>& arr, int left, int right);
+
+template <typename Type>
+void qSwap (Type& a, Type& b);
 
 //------------------------
 
 template <size_t Size> 
 void QuickSort (protected_array <Size>& arr, size_t nMaxCount /*= Size*/)
 {
-	ReplaceWrongElements (arr, 0, nMaxCount-1);
+	_QuickSort (arr, 0, nMaxCount-1);
 }
 
 //------------------------
 
 template <size_t Size>
-void ReplaceWrongElements (protected_array <Size>& arr, int left, int right)
+void AntiQuickSort (protected_array <Size> & arr, size_t nMaxCount /*= Size*/)
 {
-	int size = right-left + 1;
+	int last = 0;
+	for (size_t i = 0; i < nMaxCount && i < Size; i++)
+		arr[i] = (last += rand () % 10);
 
-	if (size <= 1) 
-		return;
+	for (size_t i = 1; i < nMaxCount && i < Size; i++)
+		std::swap (arr[i], arr[i / 2]);
+}
+
+//------------------------
+
+template <size_t Size>
+void _QuickSort (protected_array <Size>& arr, int left, int right)
+{
+	size_t size = right-left+1;
 	
-	if (size == 2)
-	{
-		if (arr[left] > arr[right]) 
-			std::swap (arr[left], arr[right]);
-
+	if (size == 1)
 		return;
-	}
 
-	if (size == 3)
+	else if (size <= 3)
 	{
-		if (arr[left+2] < arr[left  ]) std::swap (arr[left+2], arr[left  ]);
-		if (arr[left+2] < arr[left+1]) std::swap (arr[left+2], arr[left+1]);
-		if (arr[left+1] < arr[left  ]) std::swap (arr[left+1], arr[left  ]);
-
+		SedgewickSort (arr, left, right);
 		return;
 	}
 
 	int lft = left;
 	int rgt = right;
 
-	int mid = left + (right-left) / 2;
+	int mid = left + rand () % (right-left);
 	controllable tmp = arr[mid];
 
 	while (true)
@@ -55,12 +63,21 @@ void ReplaceWrongElements (protected_array <Size>& arr, int left, int right)
 		while (arr[rgt] > tmp) rgt--;
 
 		if (lft < rgt)
-			std::swap (arr[lft++], arr[rgt--]);
+			qSwap (arr[lft++], arr[rgt--]);
+
 		else break;
 	}
 
-	ReplaceWrongElements (arr, left,  lft-1);
-	ReplaceWrongElements (arr, rgt+1, right);
+	_QuickSort (arr, left,  lft-1);
+	_QuickSort (arr, rgt+1, right);
+}										  
+
+//------------------------
+
+template <typename Type>
+void qSwap (Type& a, Type& b)
+{
+	if (a != b) std::swap (a, b);
 }
 
 //------------------------

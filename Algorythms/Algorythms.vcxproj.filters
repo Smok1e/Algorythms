@@ -74,5 +74,11 @@
     <ClInclude Include="Sort\Algorythms\QuickSort.h">
       <Filter>Header Files\Sort\Algorythms</Filter>
     </ClInclude>
+    <ClInclude Include="Sort\Algorythms\Merge.h">
+      <Filter>Header Files\Sort\Algorythms</Filter>
+    </ClInclude>
+    <ClInclude Include="Sort\Algorythms\SedgewickSort.h">
+      <Filter>Header Files\Sort\Algorythms</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

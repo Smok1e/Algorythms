@@ -145,7 +145,9 @@
     <ClInclude Include="Sort\Algorythms\BinaryInsertion.h" />
     <ClInclude Include="Sort\Algorythms\Bubble.h" />
     <ClInclude Include="Sort\Algorythms\Insertion.h" />
+    <ClInclude Include="Sort\Algorythms\Merge.h" />
     <ClInclude Include="Sort\Algorythms\QuickSort.h" />
+    <ClInclude Include="Sort\Algorythms\SedgewickSort.h" />
     <ClInclude Include="Sort\Algorythms\Selection.h" />
     <ClInclude Include="Sort\CheckSort.h" />
     <ClInclude Include="Sort\Controllable.h" />
